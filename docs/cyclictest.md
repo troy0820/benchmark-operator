@@ -1,18 +1,18 @@
 # cyclictest
 
-[cyclictest](https://manpages.debian.org/jessie/rt-tests/cyclictest.8) is a performance testing tool for real-time kernels, that helps us qunatify
+[cyclictest](https://manpages.debian.org/jessie/rt-tests/cyclictest.8) is a performance testing tool for real-time kernels, that helps us quantify
 latencies. Latency is the time between the occurence of an event (like an interrupt) and the time that the event is handled. Cyclictest measures the
-amount of time that passes between when a timer expires and when the thread which set the timer actually runs, thereby helping us quantiy latencies.
+amount of time that passes between when a timer expires and when the thread which set the timer actually runs, thereby helping us quantify latencies.
 
 The goal of the cyclictest workload in the benchmark-operator is to run cyclictest inside of a container and measure the latency per core. This is
-done by running one SCHED_FIFO thread per core. The workload also gives the option to run [stress-ng] to rum some SCHED_OTHER tasks along with
+done by running one SCHED_FIFO thread per core. The workload also gives the option to run [stress-ng] to run some SCHED_OTHER tasks along with
 SCHED_FIFO real-time tasks which are higher priority.
 
 ## Running cyclictest
 
 Given that you followed instructions to deploy operator, you can modify [cr.yaml](../config/samples/cyclictest/cr.yaml) to your needs.
 It is recommended to define pod requests and limits when running cyclict test, to give guaranteed CPUs to the pods. It is also expected to have the
-realtime kernel installed with required isolation for pods using the [Performance Add-On Operator](https://github.com/openshift-kni/performance-addon-operators).
+real-time kernel installed with required isolation for pods using the [Performance Add-On Operator](https://github.com/openshift-kni/performance-addon-operators).
 
 An example CR might look like this
 

@@ -1,4 +1,4 @@
-This page describes how to use cache-dropping features of benchmark-operator.   
+This page describes how to use cache-dropping features of benchmark-operator.
 This feature is totally optional and if you do not specify it in the CR, then it will not happen.
 
 # why drop cache
@@ -6,7 +6,7 @@ This feature is totally optional and if you do not specify it in the CR, then it
 Cache-dropping prevents previous state of system from affecting performance results, and this helps you
 to achieve repeatable, accurate results with low variance.
 
-Caching is an important part of any system's performance, and it is of course desirable in some cases 
+Caching is an important part of any system's performance, and it is of course desirable in some cases
 to explicitly make use of caching.   However, this cache-dropping feature does not prevent testing of
 caching performance - if you run a long enough test for the cache to "warm up", you can do this even
 with cache-dropping enabled, since cache-dropping only happens before each sample, not in the middle of
@@ -17,7 +17,7 @@ is much bigger than the amount of memory available for caching, and use a unifor
 
 # how to drop cache
 
-There are different types of caching that occur in the system 
+There are different types of caching that occur in the system
 
 - kernel buffer caching
 - (Ceph OCS) OSD caching (not yet supported fully)
@@ -30,7 +30,7 @@ drop_cache_kernel: true
 drop_cache_rook_ceph: true
 ```
 
-## how to drop kernel cache 
+## how to drop kernel cache
 
 For this to work, you must **label** the nodes that you want to drop kernel cache, for example:
 
@@ -47,11 +47,11 @@ or to label all worker nodes:
 If you do not do this, benchmark-operator will reject the benchmark with an error to the effect that
 none of the cluster nodes have this label. This label controls where kernel cache is dropped.
 
-There will be a short delay after kernel cache is dropped in order to allow the system to recover 
+There will be a short delay after kernel cache is dropped in order to allow the system to recover
 some key cache contents before stressing it with a workload.  This is controllable via the CACHE_RELOAD_TIME
-env. var. and defaults to 10 sec.
+env var and defaults to 10 sec.
 
-The specific benchmark must support this feature.   
+The specific benchmark must support this feature.
 Benchmarks supported for kernel cache dropping at present are:
 
 - fio
@@ -60,11 +60,10 @@ Benchmarks supported for kernel cache dropping at present are:
 ## how to drop Ceph OSD cache
 
 For this to work with OpenShift Container Storage, you must do these steps once the benchmark-operator is running:
-and the cache dropper pod, and enable benchmark-operator to see into the openshift-storage namespace.   
+and the cache dropper pod, and enable benchmark-operator to see into the openshift-storage namespace.
 You can do this with:
 
-```
-
+```bash
 # enable the benchmark operator to look for pods in the openshift-storage namespace
 oc create -f roles/ceph_osd_cache_drop/ocs-cache-drop-clusterrole.yaml
 
@@ -80,7 +79,7 @@ oc -n openshift-storage get pod | awk '/tool/||/drop/'
 
 ```
 
-when you see both of these pods in the running state, then you can use benchmark operator.   The reason that
+When you see both of these pods in the running state, then you can use benchmark operator.   The reason that
 you have to manually start these two pods running is that the benchmark-operator does not have authorization
 to run them in the openshift-storage namespace and get access to the secrets needed to do this.
 
@@ -98,11 +97,11 @@ for details on how this is done.  Each pod started by this daemonset is running 
 responds to a GET URL by dropping kernel cache using equivalent of shell command:
 
 ```
-sync 
+sync
 echo 3 > /proc/sys/vm/drop_caches
 ```
 
-The sync is required because the kernel cannot drop cache on dirty pages.  
+The sync is required because the kernel cannot drop cache on dirty pages.
 A logfile named /tmp/dropcache.log is visible on every cache dropper pod so you can see what it's doing
 
 The benchmark itself must pass environment variables to run_snafu.py in order for it to request a cache
@@ -132,6 +131,6 @@ similarly, for Ceph OSD cache dropping, you must add this to one of your workloa
 {% endif %}
 
 ```
-The ansible playbook for benchmark-operator will look up the ceph_osd_cache_drop_pod_ip IP address and fill in this var, 
+The ansible playbook for benchmark-operator will look up the ceph_osd_cache_drop_pod_ip IP address and fill in this var,
 all you have to do is pass it in.  See the ceph_osd_cache_drop ansible role for details.
 
